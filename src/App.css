@@ -1,0 +1,19 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 0.75em 0;
+  font-size: 1rem;
+  z-index: 100;
+}
