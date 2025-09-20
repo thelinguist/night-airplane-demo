@@ -18,9 +18,7 @@ const cameraPresets: Record<string, Vector3D> = {
 
 export function ThreeDModel() {
   const [lightsOn, setLightsOn] = useState(false)
-  const [cameraPosition] = useState<Vector3D>(
-    cameraPresets.oncoming,
-  )
+  const [cameraPosition] = useState<Vector3D>(cameraPresets.oncoming)
 
   return (
     <div className="ThreeDModel">

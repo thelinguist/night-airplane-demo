@@ -1,0 +1,10 @@
+**/assets/**
+src/assets/**
+assets/
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.webp
