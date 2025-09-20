@@ -1,6 +1,6 @@
 import { Suspense, useState } from "react"
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls } from "@react-three/drei"
+import { Loader, OrbitControls } from "@react-three/drei"
 import { EffectComposer, Bloom } from "@react-three/postprocessing"
 import { AirplaneModel } from "./Airplane"
 import type { Vector3D } from "./types"
@@ -46,6 +46,7 @@ export function ThreeDModel() {
           />
         </EffectComposer>
       </Canvas>
+      <Loader />
     </div>
   )
 }
