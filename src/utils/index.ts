@@ -4,9 +4,13 @@ import { CameraControls } from "@react-three/drei"
 import type { RefObject } from "react"
 
 export const getRandomValue = <T = object>(object: T) => {
+  return object[getRandomKey(object) as keyof T]
+}
+
+export const getRandomKey = <T = object>(object: T) => {
   const keys = Object.keys(object as object)
   const randomIndex = Math.floor(Math.random() * keys.length)
-  return object[keys[randomIndex] as keyof T]
+  return keys[randomIndex]
 }
 
 export const moveCamera = (cameraControlsRef: RefObject<CameraControls | null>, newPos?: Vector3D) => {

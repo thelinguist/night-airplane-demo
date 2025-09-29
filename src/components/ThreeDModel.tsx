@@ -4,20 +4,23 @@ import { CameraControls, Loader, Stars } from "@react-three/drei"
 import { Bloom, EffectComposer } from "@react-three/postprocessing"
 import { AirplaneModel } from "./Airplane"
 import { button, useControls } from "leva"
-import { moveCamera } from "../utils"
+import { getRandomKey, moveCamera } from "../utils"
 import { cameraPresets } from "../constants"
 
 export function ThreeDModel() {
   const cameraControlsRef = useRef<CameraControls>(null)
 
-  const { "Lights On": lightsOn, "Camera Position": camPos } = useControls({
-    "Lights On": false,
-    "Camera Position": {
-      options: Object.keys(cameraPresets),
-      value: "Oncoming",
-    },
-    "Randomize Camera Position": button(() => moveCamera(cameraControlsRef)),
-  })
+  const [{ "Lights On": lightsOn, "Camera Position": camPos }, set] =
+    useControls(() => ({
+      "Lights On": false,
+      "Camera Position": {
+        options: Object.keys(cameraPresets),
+        value: "Oncoming",
+      },
+      "Randomize Camera Position": button(() =>
+        set({ "Camera Position": getRandomKey(cameraPresets) }),
+      ),
+    }))
 
   useEffect(
     () => moveCamera(cameraControlsRef, cameraPresets[camPos]),
