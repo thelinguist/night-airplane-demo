@@ -1,6 +1,5 @@
-import "./App.css"
-import { ThreeDModel } from "./ThreeDModel"
-import Footer from "./Footer"
+import { ThreeDModel } from "./components/ThreeDModel"
+import Footer from "./components/Footer"
 
 function App() {
   return (

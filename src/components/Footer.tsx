@@ -1,5 +1,5 @@
 import { useState } from "react"
-import githubIcon from "./assets/github.svg"
+import githubIcon from "../assets/github.svg"
 
 const Footer = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)

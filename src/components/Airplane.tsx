@@ -1,7 +1,7 @@
 import { useGLTF } from "@react-three/drei"
-import airplaneModel from "./assets/cesna_airplane.glb"
+import airplaneModel from "../assets/cesna_airplane.glb"
 import { WingletLight } from "./WingletLight"
-import type { Vector3D } from "./types"
+import type { Vector3D } from "../types"
 
 const wingLength = 13.2
 const wingHeight = 1.55

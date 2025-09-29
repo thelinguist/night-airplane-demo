@@ -1,5 +1,5 @@
 import type { FC } from "react"
-import type { Vector3D } from "./types"
+import type { Vector3D } from "../types"
 
 interface Props {
   position: Vector3D
