@@ -1,13 +1,15 @@
 import { useState } from "react"
 import githubIcon from "../assets/github.svg"
 
+const repo = "https://github.com/thelinguist/night-airplane-demo"
+
 const Footer = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
     <footer>
       <a
-        href="https://github.com/thelinguist/night-airplane-demo"
+        href={repo}
         target="_blank"
         rel="noopener noreferrer"
         className="socials"
@@ -34,7 +36,7 @@ const Footer = () => {
           textDecoration: "underline",
         }}
       >
-        Credits
+        About
       </button>
       <dialog
         open={isDialogOpen}
@@ -52,6 +54,15 @@ const Footer = () => {
           margin: 0,
         }}
       >
+        <p>
+          <a
+            href={`${repo}?tab=readme-ov-file#night-airplane-demo`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Instructions
+          </a>
+        </p>
         <p>
           Code by{" "}
           <a
