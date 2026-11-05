@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef } from "react"
+import { lazy, Suspense, useEffect, useRef } from "react"
 import { Canvas } from "@react-three/fiber"
 import { CameraControls, Loader, Stars } from "@react-three/drei"
 import { Bloom, EffectComposer } from "@react-three/postprocessing"
@@ -6,6 +6,18 @@ import { AirplaneModel } from "./Airplane"
 import { button, useControls } from "leva"
 import { getRandomKey, moveCamera } from "../utils"
 import { cameraPresets } from "../constants"
+import { readDebugParams } from "../skybox/skybox-variants"
+
+// Read once. ?sky=<variant> and ?stats are prototype toggles; without them nothing changes.
+const debugParams = readDebugParams(window.location.search)
+
+// Lazy so the prototype code stays out of the default bundle.
+const Skybox = lazy(() =>
+  import("./Skybox").then((m) => ({ default: m.Skybox })),
+)
+const PerfStats = lazy(() =>
+  import("./PerfStats").then((m) => ({ default: m.PerfStats })),
+)
 
 export function ThreeDModel() {
   const cameraControlsRef = useRef<CameraControls>(null)
@@ -27,11 +39,23 @@ export function ThreeDModel() {
     [camPos],
   )
 
+  const stars = (
+    <Stars
+      radius={100}
+      depth={50}
+      count={5000}
+      factor={4}
+      saturation={0}
+      fade
+      speed={1}
+    />
+  )
+
   return (
     <div className="ThreeDModel">
       <Canvas
         camera={{ position: cameraPresets.Oncoming, fov: 50 }}
-        frameloop="demand"
+        frameloop={debugParams.isStatsEnabled ? "always" : "demand"}
       >
         <ambientLight intensity={lightsOn ? 0.4 : 0.01} />
         <directionalLight
@@ -39,15 +63,20 @@ export function ThreeDModel() {
           intensity={lightsOn ? 0.9 : 0}
         />
         <Suspense fallback={null}>
-          <Stars
-            radius={100}
-            depth={50}
-            count={5000}
-            factor={4}
-            saturation={0}
-            fade
-            speed={1}
-          />
+          {debugParams.skybox ? (
+            // Own boundary: the plane must not disappear while the sky downloads.
+            <Suspense fallback={stars}>
+              <Skybox
+                variant={debugParams.skybox}
+                initialIntensity={debugParams.skyIntensity}
+                initialRotation={debugParams.skyRotation}
+                isIblEnabled={debugParams.isIblEnabled}
+                fallback={stars}
+              />
+            </Suspense>
+          ) : (
+            stars
+          )}
           <AirplaneModel />
           <CameraControls ref={cameraControlsRef} />
           <EffectComposer>
@@ -59,6 +88,11 @@ export function ThreeDModel() {
             />
           </EffectComposer>
         </Suspense>
+        {debugParams.isStatsEnabled && (
+          <Suspense fallback={null}>
+            <PerfStats />
+          </Suspense>
+        )}
       </Canvas>
       <Loader />
     </div>
