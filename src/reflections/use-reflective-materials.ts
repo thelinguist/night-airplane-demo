@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import { useThree } from "@react-three/fiber"
 import { Mesh, MeshStandardMaterial, type Object3D, type Texture } from "three"
-import type { Approach, ReflectionSettings } from "./settings"
+import type { ReflectionSettings } from "./settings"
 import {
   applyReflectionParams,
   classifySurface,
@@ -18,13 +18,11 @@ type Swap = {
 
 /**
  * Swaps the airplane's materials for reflective copies while mounted and
- * restores the GLB originals on unmount. useGLTF caches the scene, so the
- * restore is what keeps "Reflections off" identical to main.
+ * restores the GLB originals on unmount (useGLTF caches the scene).
  */
 export function useReflectiveMaterials(
   target: Object3D,
   envMap: Texture,
-  approach: Exclude<Approach, "global">,
   settings: ReflectionSettings,
 ): void {
   const invalidate = useThree((state) => state.invalidate)
@@ -37,12 +35,7 @@ export function useReflectiveMaterials(
       const original: unknown = object.material
       if (!(original instanceof MeshStandardMaterial)) return
       const surface = classifySurface(object.name)
-      const replacement = createReflectiveMaterial(
-        original,
-        surface,
-        approach,
-        envMap,
-      )
+      const replacement = createReflectiveMaterial(original, surface, envMap)
       object.material = replacement
       created.push({ mesh: object, original, replacement, surface })
     })
@@ -55,12 +48,12 @@ export function useReflectiveMaterials(
       swaps.current = []
       invalidate()
     }
-  }, [target, envMap, approach, invalidate])
+  }, [target, envMap, invalidate])
 
   useEffect(() => {
     for (const { replacement, original, surface } of swaps.current) {
-      applyReflectionParams(replacement, original, surface, approach, settings)
+      applyReflectionParams(replacement, original, surface, settings)
     }
     invalidate()
-  }, [settings, approach, envMap, target, invalidate])
+  }, [settings, envMap, target, invalidate])
 }

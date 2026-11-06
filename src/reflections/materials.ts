@@ -4,12 +4,12 @@ import {
   ShaderChunk,
   type Texture,
 } from "three"
-import type { Approach, ReflectionSettings } from "./settings"
+import type { ReflectionSettings } from "./settings"
 
 export type Surface = "paint" | "glass" | "metal" | "rubber"
 
 // Mesh names in cesna_airplane.glb after GLTFLoader's sanitizeNodeName (dots removed).
-// Worked out from the mesh bounds and base colors; see docs/env-map-reflections/README.md.
+// Worked out from the mesh bounds and base colors.
 const SURFACE_BY_MESH: Record<string, Surface> = {
   Plane_0: "paint", // fuselage
   Plane_3: "paint", // vertical tail
@@ -69,34 +69,30 @@ function toClearcoatPaint(
   })
 }
 
-/** Builds the replacement material for one airplane mesh. Never mutates `original`. */
+/**
+ * Builds the replacement material for one airplane mesh: clearcoat paint,
+ * env map on every surface, specular-only IBL. Never mutates `original`.
+ */
 export function createReflectiveMaterial(
   original: MeshStandardMaterial,
   surface: Surface,
-  approach: Exclude<Approach, "global">,
   envMap: Texture,
 ): MeshStandardMaterial {
-  const isTuned = approach !== "material"
   const material =
-    isTuned && surface === "paint"
-      ? toClearcoatPaint(original)
-      : original.clone()
+    surface === "paint" ? toClearcoatPaint(original) : original.clone()
   material.envMap = envMap
-  if (approach === "specular") makeSpecularOnly(material)
+  makeSpecularOnly(material)
   return material
 }
 
-/** Applies the slider values. Cheap: no shader recompile. */
+/** Applies intensity and per-surface values. Cheap: no shader recompile. */
 export function applyReflectionParams(
   material: MeshStandardMaterial,
   original: MeshStandardMaterial,
   surface: Surface,
-  approach: Exclude<Approach, "global">,
   settings: ReflectionSettings,
 ): void {
   material.envMapIntensity = settings.intensity
-  material.envMapRotation.set(0, settings.rotation, 0)
-  if (approach === "material") return
   if (material instanceof MeshPhysicalMaterial) {
     material.clearcoatRoughness = settings.paintClearcoatRoughness
   }

@@ -1,14 +1,10 @@
-import { Suspense, lazy } from "react"
+import { Suspense } from "react"
 import { useGLTF } from "@react-three/drei"
 import airplaneModel from "../assets/cesna_airplane.glb"
 import { WingletLight } from "./WingletLight"
+import { Reflections } from "./Reflections"
 import type { Vector3D } from "../types"
 import type { ReflectionSettings } from "../reflections/settings"
-
-// Lazy so the env-map code (drei loaders) stays out of the main bundle while the prototype is off.
-const Reflections = lazy(() =>
-  import("./Reflections").then((module) => ({ default: module.Reflections })),
-)
 
 const wingLength = 13.2
 const wingHeight = 1.55
@@ -16,8 +12,8 @@ const wingDatum = -4
 const tailPosition: Vector3D = [8.4, -1, 0]
 
 interface Props {
-  /** Environment-map reflections prototype. Undefined = off (same as main). */
-  reflections?: ReflectionSettings
+  /** Environment-map reflection values (intensity follows "Lights On"). */
+  reflections: ReflectionSettings
 }
 
 export function AirplaneModel({ reflections }: Props) {
@@ -25,11 +21,10 @@ export function AirplaneModel({ reflections }: Props) {
   return (
     <>
       <primitive object={scene} scale={1} />
-      {reflections && (
-        <Suspense fallback={null}>
-          <Reflections target={scene} settings={reflections} />
-        </Suspense>
-      )}
+      {/* Own boundary so the plane doesn't wait for the env-map download. */}
+      <Suspense fallback={null}>
+        <Reflections target={scene} settings={reflections} />
+      </Suspense>
       <WingletLight
         position={[wingDatum, wingHeight, wingLength]}
         color="#ff0000"
