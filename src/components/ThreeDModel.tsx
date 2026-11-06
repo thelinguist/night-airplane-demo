@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef } from "react"
+import { Suspense, useEffect, useMemo, useRef } from "react"
 import { Canvas } from "@react-three/fiber"
 import { CameraControls, Loader, Stars } from "@react-three/drei"
 import { Bloom, EffectComposer } from "@react-three/postprocessing"
@@ -6,6 +6,7 @@ import { AirplaneModel } from "./Airplane"
 import { button, useControls } from "leva"
 import { getRandomKey, moveCamera } from "../utils"
 import { cameraPresets } from "../constants"
+import { getReflectionSettings } from "../reflections/settings"
 
 export function ThreeDModel() {
   const cameraControlsRef = useRef<CameraControls>(null)
@@ -21,6 +22,8 @@ export function ThreeDModel() {
         set({ "Camera Position": getRandomKey(cameraPresets) }),
       ),
     }))
+
+  const reflections = useMemo(() => getReflectionSettings(lightsOn), [lightsOn])
 
   useEffect(
     () => moveCamera(cameraControlsRef, cameraPresets[camPos]),
@@ -48,7 +51,7 @@ export function ThreeDModel() {
             fade
             speed={1}
           />
-          <AirplaneModel />
+          <AirplaneModel reflections={reflections} />
           <CameraControls ref={cameraControlsRef} />
           <EffectComposer>
             <Bloom
