@@ -55,7 +55,7 @@ export type InitialReflectionState = {
 export const DEFAULT_SETTINGS: ReflectionSettings = {
   approach: "specular",
   source: "hdr1k",
-  intensity: 1,
+  intensity: 0.25,
   rotation: 0,
   paintClearcoatRoughness: 0.08,
   glassRoughness: 0.05,

@@ -5,7 +5,7 @@ Poly Haven's [moonless_golf](https://polyhaven.com/a/moonless_golf) HDRI is used
 ## How to try it
 
 - Leva → **Reflections (prototype)** → tick _Reflections_. The folder also has controls for approach, source, intensity, rotation, and paint/glass/metal roughness and metalness.
-- Or open the page with URL params: `?envmap=<approach>&envIntensity=<n>&envRotation=<rad>&envSource=<hdr1k|jpg2k>`. `?envmap` with no value enables the default (`specular`, intensity 1).
+- Or open the page with URL params: `?envmap=<approach>&envIntensity=<n>&envRotation=<rad>&envSource=<hdr1k|jpg2k>`. `?envmap` with no value enables the recommended default (`specular`, intensity 0.25).
 
 When the toggle is off, nothing is mounted. The env-map code is a lazy chunk that isn't downloaded, no texture is fetched, and the GLB materials stay as they are. The only visible change is a collapsed leva folder.
 
